@@ -623,7 +623,7 @@
 				return DPGlobal.formatDate(d, format, lang);
 			}).join(this.o.multidateSeparator);
 		},
-		
+
 		getStartDate: function(){
 			return this.o.startDate;
 		},
@@ -634,7 +634,7 @@
 			this.updateNavArrows();
 			return this;
 		},
-		
+
 		getEndDate: function(){
 			return this.o.endDate;
 		},
@@ -993,6 +993,7 @@
 			nextMonth.setUTCDate(nextMonth.getUTCDate() + 42);
 			nextMonth = nextMonth.valueOf();
 			var html = [];
+      var dayContent;
 			var clsName;
 			while (prevMonth.valueOf() < nextMonth){
 				if (prevMonth.getUTCDay() === this.o.weekStart){
@@ -1033,7 +1034,14 @@
 				}
 
 				clsName = $.unique(clsName);
-				html.push('<td class="'+clsName.join(' ')+'"' + (tooltip ? ' title="'+tooltip+'"' : '') + '>'+prevMonth.getUTCDate() + '</td>');
+
+        if (this.o.onRenderDayContent !== $.noop) {
+          dayContent = this.o.onRenderDayContent(new Date(prevMonth.getTime()));
+        } else {
+          dayContent = prevMonth.getUTCDate();
+        }
+
+				html.push('<td class="'+clsName.join(' ')+'"' + (tooltip ? ' title="'+tooltip+'"' : '') + '>' + dayContent + '</td>');
 				tooltip = null;
 				if (prevMonth.getUTCDay() === this.o.weekEnd){
 					html.push('</tr>');
@@ -1694,6 +1702,7 @@
 		beforeShowYear: $.noop,
 		beforeShowDecade: $.noop,
 		beforeShowCentury: $.noop,
+    onRenderDayContent: $.noop,
 		calendarWeeks: false,
 		clearBtn: false,
 		toggleActive: false,
